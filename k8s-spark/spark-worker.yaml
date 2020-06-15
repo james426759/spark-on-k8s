@@ -1,0 +1,29 @@
+apiVersion: apps/v1 
+kind: Deployment
+metadata:
+  name: spark-worker
+spec:
+  selector:
+    matchLabels:
+      app: spark-worker
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: spark-worker
+    spec:
+      containers:
+      - name: spark-worker
+        image: spark-2.4.5-bin-hadoop2.7:latest
+        imagePullPolicy: "IfNotPresent"
+        env:
+         - name: master_ip
+           value: spark-master.default.svc.cluster.local
+        ports:
+        - containerPort: 7078
+        command: 
+         - "/bin/bash"
+         - "-c"
+         - "--"
+        args: 
+         - './start-worker.sh ; sleep infinity'
